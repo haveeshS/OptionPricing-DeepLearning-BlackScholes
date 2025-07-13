@@ -14,6 +14,8 @@ options_df = pd.read_csv("options_cleaned.csv") # our dataset containing X and Y
 
 full_options_df = pd.read_csv("options_withriskfreerates_andDeltaT.csv") # loaded full data for stock tickers (to be used for splitting)
 
+options_df["stockTicker"] = full_options_df["stockTicker"]
+
 # in this model, I follow a split of 70%, 20% and 10% splits for training, dev/validation and test sets respecitvely
 # instead of splitting the data fully randomly, 
 # I go into the option data of each stock/ticker seperately and then perform the 70-20-10 split 
@@ -40,18 +42,20 @@ train_df = pd.concat(train_list, ignore_index=True)
 dev_df = pd.concat(dev_list, ignore_index=True)
 test_df = pd.concat(test_list, ignore_index=True)
 
-# splitting X (features) and Y (target)
-
 target_col = "lastPrice"
+ticker_col = "stockTicker"
 
 Y_train = train_df[[target_col]]
-X_train = train_df.drop(columns=[target_col])
+X_train = train_df.drop(columns=[target_col, ticker_col])  
 
 Y_dev = dev_df[[target_col]]
-X_dev = dev_df.drop(columns=[target_col])
+X_dev = dev_df.drop(columns=[target_col, ticker_col]) 
+
+test_df.to_csv("test_data_options.csv",index=False)
 
 Y_test = test_df[[target_col]]
-X_test = test_df.drop(columns=[target_col])
+X_test = test_df.drop(columns=[target_col, ticker_col]) 
+
 
 # deep learning also works better when the features are normalised, so a standard scaling is done
 scaler = StandardScaler()
