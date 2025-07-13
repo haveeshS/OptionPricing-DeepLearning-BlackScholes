@@ -63,6 +63,13 @@ X_train_scaled = scaler.fit_transform(X_train)
 X_dev_scaled = scaler.transform(X_dev)
 X_test_scaled = scaler.transform(X_test)
 
+test_df_scaled = test_df
+for i in range(X_test_scaled.shape[1]):
+
+    test_df_scaled.iloc[:,i] = X_test_scaled[:,i]
+
+test_df_scaled.to_csv("test_data_options_scaled.csv",index=False)
+
 # Define the model using the framework available on TensorFlow
 
 model = Sequential([
@@ -82,16 +89,18 @@ model.compile(
 )
 
 history = model.fit(
-    X_train, Y_train,
-    validation_data=(X_dev, Y_dev),
-    epochs=100,              # Start with a small number, like 50
+    X_train_scaled, Y_train,
+    validation_data=(X_dev_scaled, Y_dev),
+    epochs=50,              # Start with a small number, like 50
     batch_size=32,          # Common choice
     verbose=1               # Shows progress per epoch
 )
 
+model.save("model_scaledfeatures.keras")
+
 # The above step will show the result of the training
-# With this, the best model obtained has an mae of around 11
-# For our dataset this is good, let's try to look if better results can be achieved by tuning the parameters
+# With this, the best model obtained has an mae of around 4, which is pretty good
+# let's try to look if better results can be achieved by tuning the parameters
 
 # For tuning and searching the hyperparameter space for the best model, one can use keras-tuner
 
@@ -160,9 +169,5 @@ test_loss, test_mae = best_model.evaluate(X_test, Y_test)
 print("Test MAE:", test_mae)
 
 best_model.save("best_model_from_tuner.keras") # saving the model for future use
-
-X_test["lastPrice"] = Y_test["lastPrice"]
-
-X_test.to_csv("test_data_options.csv",index=False) # saving the test data so we have the same test set later as well
 
 
