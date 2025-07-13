@@ -47,83 +47,10 @@ def BlackScholesModel(S,K,r,dT,sigma,isCall):
     
     return option_price
 
-import numpy as np
-from scipy.stats import norm
 
-def BlackScholesModel_vec(S, K, r, dT, sigma, isCall):
-    """
-    Vectorized version of the Black-Scholes formula for European options.
+BlackScholesModel_vec = np.vectorize(BlackScholesModel)
 
-    Parameters
-    ----------
-    S : array-like
-        Current stock price(s).
-    K : array-like
-        Strike price(s).
-    r : array-like or float
-        Risk-free rate(s).
-    dT : array-like
-        Time to maturity (in years).
-    sigma : array-like
-        Volatility of the underlying stock(s).
-    isCall : array-like or bool
-        True for call option(s), False for put option(s).
 
-    Returns
-    -------
-    option_prices : ndarray
-        Black-Scholes prices for the options.
-    """
-    S = np.asarray(S)
-    K = np.asarray(K)
-    dT = np.asarray(dT)
-    sigma = np.asarray(sigma)
-    isCall = np.asarray(isCall)
-
-    # Create an array of NaNs to start with
-    option_prices = np.full_like(S, fill_value=np.nan, dtype=np.float64)
-
-    # Valid inputs mask
-    valid = (dT > 0) & (sigma >= 0) & (S > 0) & (K > 0)
-
-    # sigma == 0 case (no volatility)
-    zero_vol = valid & (sigma == 0)
-    if zero_vol.any():
-        if np.isscalar(isCall):
-            if isCall:
-                option_prices[zero_vol] = np.maximum(S[zero_vol] - K[zero_vol], 0)
-            else:
-                option_prices[zero_vol] = np.maximum(K[zero_vol] - S[zero_vol], 0)
-        else:
-            call_mask = isCall & zero_vol
-            put_mask = ~isCall & zero_vol
-            option_prices[call_mask] = np.maximum(S[call_mask] - K[call_mask], 0)
-            option_prices[put_mask] = np.maximum(K[put_mask] - S[put_mask], 0)
-
-    # Normal Black-Scholes case
-    normal_case = valid & (sigma > 0)
-    if normal_case.any():
-        S_n = S[normal_case]
-        K_n = K[normal_case]
-        dT_n = dT[normal_case]
-        sigma_n = sigma[normal_case]
-        r_n = r if np.isscalar(r) else r[normal_case]
-
-        d1 = (np.log(S_n / K_n) + (r_n + 0.5 * sigma_n**2) * dT_n) / (sigma_n * np.sqrt(dT_n))
-        d2 = d1 - sigma_n * np.sqrt(dT_n)
-
-        if np.isscalar(isCall):
-            if isCall:
-                option_prices[normal_case] = norm.cdf(d1) * S_n - norm.cdf(d2) * K_n * np.exp(-r_n * dT_n)
-            else:
-                option_prices[normal_case] = norm.cdf(-d2) * K_n * np.exp(-r_n * dT_n) - norm.cdf(-d1) * S_n
-        else:
-            call_mask = isCall[normal_case]
-            put_mask = ~call_mask
-            option_prices[normal_case][call_mask] = norm.cdf(d1[call_mask]) * S_n[call_mask] - norm.cdf(d2[call_mask]) * K_n[call_mask] * np.exp(-r_n[call_mask] * dT_n[call_mask])
-            option_prices[normal_case][put_mask] = norm.cdf(-d2[put_mask]) * K_n[put_mask] * np.exp(-r_n[put_mask] * dT_n[put_mask]) - norm.cdf(-d1[put_mask]) * S_n[put_mask]
-
-    return option_prices
 
 
 def binomial_american_option(S, K, r, dT, sigma, isCall, div_yield=0.0, steps=100):
