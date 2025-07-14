@@ -7,8 +7,8 @@ from bs4 import BeautifulSoup
 import requests
 
 # importing the data which was fetched using "fetch_data.py"
-calls_df = pd.read_csv("optiondata_calls_yfinance_2025-07-11.csv") 
-puts_df = pd.read_csv("optiondata_puts_yfinance_2025-07-11.csv")
+calls_df = pd.read_csv("data/optiondata_calls_yfinance_2025-07-11.csv") 
+puts_df = pd.read_csv("data/optiondata_puts_yfinance_2025-07-11.csv")
 
 # extracting the years in which data is available
 # the risk-free rates are obtained for these years
@@ -97,7 +97,7 @@ time_to_expiry = (expiry_dt - trade_dt).dt.total_seconds()/(365*24*3600) # in ye
 
 options_df["deltaT_years"] = time_to_expiry # this column stores time_to_expiry
 
-options_df.to_csv("options_withriskfreerates_andDeltaT.csv",index=False) # saving the whole data
+options_df.to_csv("data/options_withriskfreerates_andDeltaT.csv",index=False) # saving the whole data
 
 
 # it is also convenient to already extract the more useful columns
@@ -120,4 +120,4 @@ options_relevantdata_df = options_df.loc[:,relevant_columns]
 options_relevantdata_df["volume"] = options_relevantdata_df["volume"].fillna(0)
 options_relevantdata_df["openInterest"] = options_relevantdata_df["openInterest"].fillna(0)
 
-options_relevantdata_df.to_csv("options_cleaned.csv",index=False)
+options_relevantdata_df.to_csv("data/options_cleaned.csv",index=False)

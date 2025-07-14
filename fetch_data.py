@@ -65,8 +65,8 @@ for ticker in tickers_list:
 today_str = datetime.now().strftime("%Y-%m-%d")
 
 # Construct filenames dynamically
-calls_filename = f"optiondata_calls_yfinance_{today_str}.csv"
-puts_filename = f"optiondata_puts_yfinance_{today_str}.csv"
+calls_filename = f"data/optiondata_calls_yfinance_{today_str}.csv"
+puts_filename = f"data/optiondata_puts_yfinance_{today_str}.csv"
 
 # Save the dataframes
 calls_df.to_csv(calls_filename, index=False)

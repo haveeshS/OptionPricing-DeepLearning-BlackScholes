@@ -10,9 +10,9 @@ import keras_tuner as kt
 from tensorflow import keras
 from tensorflow.keras import layers
 
-options_df = pd.read_csv("options_cleaned.csv") # our dataset containing X and Y
+options_df = pd.read_csv("data/options_cleaned.csv") # our dataset containing X and Y
 
-full_options_df = pd.read_csv("options_withriskfreerates_andDeltaT.csv") # loaded full data for stock tickers (to be used for splitting)
+full_options_df = pd.read_csv("data/options_withriskfreerates_andDeltaT.csv") # loaded full data for stock tickers (to be used for splitting)
 
 options_df["stockTicker"] = full_options_df["stockTicker"]
 
@@ -51,7 +51,7 @@ X_train = train_df.drop(columns=[target_col, ticker_col])
 Y_dev = dev_df[[target_col]]
 X_dev = dev_df.drop(columns=[target_col, ticker_col]) 
 
-test_df.to_csv("test_data_options.csv",index=False)
+test_df.to_csv("data/test_data_options.csv",index=False)
 
 Y_test = test_df[[target_col]]
 X_test = test_df.drop(columns=[target_col, ticker_col]) 
@@ -68,7 +68,7 @@ for i in range(X_test_scaled.shape[1]):
 
     test_df_scaled.iloc[:,i] = X_test_scaled[:,i]
 
-test_df_scaled.to_csv("test_data_options_scaled.csv",index=False)
+test_df_scaled.to_csv("data/test_data_options_scaled.csv",index=False)
 
 # Define the model using the framework available on TensorFlow
 
