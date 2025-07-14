@@ -1,0 +1,12 @@
+__pycache__/
+kt_tuner/
+Options_Historical/
+saved_pages/
+best_model_from_tuner.h5
+optiondata_old_temp.csv
+options_data_collect.ipynb
+options_data_modify.ipynb
+optionsdata_primer.ipynb
+Paper_KeYang.pdf
+Paper_SantosFerreira.pdf
+stochasticprocess.ipynb
